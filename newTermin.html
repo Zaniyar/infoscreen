@@ -18,7 +18,7 @@
     <div class="row">
         <div class="col">
             <div class="card white" style="">
-                <form class="col">
+                <form id="formular" class="col">
                     <div class="row" style="margin-top: 10px;">
                         <div class="col s6 m2 center-align">
                             <i class="small material-icons person">person_pin</i>
@@ -44,19 +44,38 @@
                     <div class="row">
                         <div class="input-field col m6 s12">
                             <i class="material-icons prefix">reorder</i>
-                            <input id="icon_prefix" type="text" class="validate">
-                            <label for="icon_prefix">Titel</label>
+                            <input id="titel" type="text" class="validate">
+                            <label for="titel">Titel</label>
                         </div>
                         <div class="input-field col m6 s12">
                             <i class="material-icons prefix">schedule</i>
-                            <input id="icon_time" type="time" class="validate">
-                            <label for="icon_time">Uhrzeit</label>
+                            <input id="uhrzeit" type="time" class="validate">
+                            <label for="uhrzeit"> </label>
+                        </div>
+                        <div class="input-field col m6 s12">
+                            <i class="material-icons prefix">view_module</i>
+                            <input id="datum" type="text" class="validate datepicker">
+                            <label for="datum"> </label>
                         </div>
                         <div class="input-field col m6 s12">
                             <i class="material-icons prefix">phone</i>
-                            <input id="icon_telephone" type="tel" class="validate">
-                            <label for="icon_telephone">Telephone</label>
+                            <input id="telefon" type="tel" class="validate">
+                            <label for="telefon">Telephone</label>
                         </div>
+                        <div class="input-field col m6 s12">
+                            <i class="material-icons prefix">person_pin</i>
+                            <input id="arzt" type="text" class="validate">
+                            <label for="arzt">Arzt</label>
+                        </div>
+                        <div class="input-field col m6 s12">
+                            <i class="material-icons prefix">location_on</i>
+                            <input id="adresse" type="text" class="validate">
+                            <label for="adresse">Adresse</label>
+                        </div>
+                        <hr/>
+                        <button class="btn waves-effect waves-light btn-large" type="submit" name="action">Speichern!
+                            <i class="material-icons">send</i>
+                        </button>
                     </div>
                 </form>
             </div>
@@ -72,7 +91,7 @@
         $('.person').on("mouseover", function () {
             $(this).removeClass('small');
             $(this).addClass('medium');
-        }).mouseout(function() {
+        }).mouseout(function () {
             $(this).removeClass('medium');
             $(this).addClass('small');
         });
@@ -80,7 +99,55 @@
         $('.person').on("click", function () {
             $('.person').removeClass('red lighten-3');
             $(this).addClass('red lighten-3');
+            werName = $(this).next("span").text();
         })
+
+
+        $('.datepicker').pickadate({
+            selectMonths: true, // Creates a dropdown to control month
+            selectYears: 15 // Creates a dropdown of 15 years to control year
+        });
+
+
+        $("#formular").submit(function (event) {
+            // alert( "Handler for .submit() called." );
+            event.preventDefault();
+            //var uhrzeitDatum = new Date($("#datum").val()+","+$("#uhrzeit").val());
+           // var timestamp = '@' + Math.round(uhrzeitDatum.getTime()/1000);
+            var jsonData = {
+                myPostData: {
+                    user: werName,
+                    titel: $("#titel").val(),
+                    datum: $("#datum").val(),
+                    uhrzeit: $("#uhrzeit").val(),
+                    telefon: $("#telefon").val(),
+                    arzt: $("#arzt").val(),
+                    adresse: $("#adresse").val(),
+                    func: "newTermin"
+                }
+            };
+
+            //data = $(this).serialize();
+            var out = JSON.stringify({'myPostData': JSON.stringify(jsonData)});
+            $.ajax({
+                type: 'POST',
+                url: 'newTermin.php',
+                data: jsonData
+            }).done(function (data) {
+                console.log(data);
+                console.log(data.datum_uhrzeit);
+                // show the
+                $('#response').html(data);
+
+            }).fail(function (data) {
+
+                // just in case posting your form failed
+                alert("Posting failed."+data);
+                console.log(data.responseText);
+
+            });
+        });
+
 
     });
 </script>
