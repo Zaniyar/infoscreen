@@ -57,6 +57,14 @@
 <script type="text/javascript" src="js/materialize.min.js"></script>
 <script>
     $(function () {
+        var weekday = new Array(7);
+        weekday[0]=  "Sonntag";
+        weekday[1] = "Montag";
+        weekday[2] = "Dienstag";
+        weekday[3] = "Mittwoch";
+        weekday[4] = "Donnerstag";
+        weekday[5] = "Freitag";
+        weekday[6] = "Samstag";
 
         $.ajax({
             type: 'POST',
@@ -68,16 +76,28 @@
             $.each(data, function(index) {
 
                 user = data[index].user;
+                datum = new Date(data[index].datum_uhrzeit);
+                adresse = data[index].adresse;
+                telefon = data[index].telefon;
+                person = data[index].person;
 
                 if(user == "Shima") {
                     $i = "<i class='material-icons circle green'>insert_chart</i>";
                 }else if(user == "Shahnaz"){
-                    $i = "<i class='material-icons circle blue'>insert_chart</i>";
+                    $i = "<i class='material-icons circle blue'>SZ</i>";
                 }else{
                     $i = "<i class='material-icons circle red'>play_arrow</i>";
                 }
 
                 $user = '<span class="title">'+user+"</span>";
+                var diff = new Date(datum - new Date());
+                var days = diff/1000/60/60/24;
+                if(datum.getMinutes()<10){
+                    minuten = "0"+datum.getMinutes();
+                }else{
+                    minuten = datum.getMinutes();
+                }
+                $user += ' <p><b>'+weekday[datum.getDay()]+" "+datum.getDay()+"."+datum.getMonth()+"</b>   in <b>"+Math.round(Math.abs(days))+'</b> Tage, um <b>'+datum.getHours()+':'+minuten+'</b><br>Beim <b>'+person+"</b>, am <b>"+adresse+"</b>, Telefonnummer: <b>"+telefon+'</b></p>';
 
                 console.log(data[index].user);
                 userLI = $("<li class='collection-item avatar'>").html($i+$user);

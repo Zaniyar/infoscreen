@@ -16,6 +16,8 @@ R::setup( 'pgsql:host=localhost;dbname=postgres',
 
 if(isset($_POST)) {
 //$book = R::load( 'termin', "1" ); //reloads our book
-    $fields = R::getAll('select * from termin');
+    $fields = R::getAll('select * from termin ORDER BY datum_uhrzeit LIMIT 12');
+
+
     echo json_encode($fields);
 }
